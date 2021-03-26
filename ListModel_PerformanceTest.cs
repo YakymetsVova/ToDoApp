@@ -11,7 +11,7 @@ namespace TodoApplication
     class ListModel_PerformanceTest
     {
         [Test, Timeout(500)]
-        [Description("Не нужно хранить все состояния модели")]
+        [Description("We don't need to save all states of model")]
         public void AntiStupidTest()
         {
             int limit = 30000;

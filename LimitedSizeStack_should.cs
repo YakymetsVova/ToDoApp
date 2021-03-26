@@ -112,20 +112,17 @@ namespace TodoApplication
         }
 
         [Test]
-        [Description("Стек не должен ссылаться на элементы, которые уже удалены из него")]
+        [Description("Stack don't need to refer to elements which have been already deleted")]
         public void StackDontKeepAllElements()
         {
             Counter counter = new Counter();
             var stack = new LimitedSizeStack<FinalizableClass>(30);
             for (int i = 0; i < 100; ++i)
                 stack.Push(new FinalizableClass(counter));
-            // Явный вызов сборщика мусора. В обычных программах так делать не нужно почти никогда. 
-            // Но в этом тесте нам нужно убедиться, что на вытесненные из стека элементы больше не осталось ссылок,
-            // Для этого мы вызываем сборщик мусора и проверяем, у скольки объектов сборщик мусора вызвал деструктор
             GC.Collect();
             GC.WaitForPendingFinalizers();
             Assert.AreEqual(70, counter.Value);
-            stack.Push(new FinalizableClass(counter)); // Чтобы объект стека не собрался сборщиком мусора раньше времени
+            stack.Push(new FinalizableClass(counter));
         }
     }
 }

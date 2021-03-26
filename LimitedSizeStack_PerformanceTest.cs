@@ -5,7 +5,7 @@ namespace TodoApplication
     [TestFixture]
     public class LimitedSizeStack_PerformanceTest
     {
-        [Test, Timeout(500), Description("Push должен работать быстро, даже при большом лимите на размер стека")]
+        [Test, Timeout(500), Description("Push need to work for o(1)")]
         public void Push_ShouldTakeConstantTime()
         {
             int limit = 100000;
@@ -17,7 +17,7 @@ namespace TodoApplication
             Assert.AreEqual(limit, stack.Count);
         }
 
-        [Test, Timeout(500), Description("Pop должен работать быстро, даже при большом лимите на размер стека")]
+        [Test, Timeout(500), Description("Pop need to work for o(1)")]
         public void Pop_ShouldTakeConstantTime()
         {
             int limit = 200000;
