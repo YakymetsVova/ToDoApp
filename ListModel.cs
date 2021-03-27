@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
+using TodoApplication.Services;
 
 namespace TodoApplication
 {
@@ -25,12 +27,23 @@ namespace TodoApplication
 
     public class ListModel<TItem>
     {
+        private readonly string PATH = $"{Environment.CurrentDirectory}\\todoDataList.json";
         public LimitedSizeStack<ActionStack<TItem>> UserActions;
+        private FileIOService<TItem> fileIOService;
         public List<TItem> Items { get; }
         public int Limit;
         public ListModel(int limit)
         {
-            Items = new List<TItem>();
+            fileIOService = new FileIOService<TItem>(PATH);
+            try
+            {
+                Items = fileIOService.LoadData();
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message); 
+            }
             Limit = limit;
             UserActions = new LimitedSizeStack<ActionStack<TItem>>(limit);
         }
@@ -41,12 +54,14 @@ namespace TodoApplication
             if (item.ToString() == "") return;
             UserActions.Push(new ActionStack<TItem>(item, Items.Count, Command.Add));
             Items.Add(item);
+            fileIOService.SaveData(Items);
         }
 
         public void RemoveItem(int index)
         {
             UserActions.Push(new ActionStack<TItem>(Items[index], index, Command.Remove));
             Items.RemoveAt(index);
+            fileIOService.SaveData(Items);
         }
 
         public bool CanUndo()
@@ -61,6 +76,7 @@ namespace TodoApplication
                 Items.Insert(lastUserAction.Index, lastUserAction.Value);
             else if (lastUserAction.Action == Command.Add)
                 Items.RemoveAt(lastUserAction.Index);
+            fileIOService.SaveData(Items);
         }
     }
 }
